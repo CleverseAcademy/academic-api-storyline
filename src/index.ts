@@ -11,6 +11,8 @@ interface ICreateCourseDto
   duration: string | number;
 }
 
+interface IUpdateCourseDto extends Omit<ICreateCourseDto, "name"> {}
+
 const MINUTE_TO_SECONDS = 60;
 const HOUR_TO_MINUTE = 60;
 
@@ -103,6 +105,32 @@ app.get("/course/:id", async (req, res) => {
   });
 
   return res.status(200).json(course);
+});
+
+app.patch(
+  "/course/:id",
+  async (req: Request<{ id: string }, unknown, IUpdateCourseDto>, res) => {
+    const { description, duration, start_time } = req.body;
+
+    const result = await client.course.update({
+      data: {
+        description,
+        start_time: start_time,
+        duration: duration_in_seconds,
+      },
+      where: { id: req.params.id },
+    });
+
+    return res.status(201).json(result);
+  }
+);
+
+app.delete("/course/:id", async (req, res) => {
+  const result = await client.course.delete({
+    where: { id: req.params.id },
+  });
+
+  return res.status(200).json(result);
 });
 
 app.listen(process.env.PORT, () => {
