@@ -1,26 +1,16 @@
 import { Course, PrismaClient } from "@prisma/client";
 import express, { Request } from "express";
+import { COURSE_DURATION_LIMIT } from "./const";
+import { ICreateCourseDto } from "./dto/course.dto";
 
 const client = new PrismaClient();
 const app = express();
 
 app.use(express.json());
 
-interface ICreateCourseDto
-  extends Omit<{ [k in keyof Course]: string }, "id" | "duration"> {
-  duration: number;
-}
-
-const MINUTE_TO_SECONDS = 60;
-const HOUR_TO_MINUTE = 60;
-
-const toSeconds = (hours: number) => hours * MINUTE_TO_SECONDS * HOUR_TO_MINUTE;
-
-const COURSE_DURATION_LIMIT = toSeconds(8);
-
 app.post(
   "/course",
-  async (req: Request<{}, unknown, ICreateCourseDto>, res) => {
+  async (req: Request<{}, Course | string, ICreateCourseDto>, res) => {
     const { description, duration, name, start_time } = req.body;
 
     // Validation logics
@@ -53,7 +43,7 @@ app.post(
   }
 );
 
-app.get("/course", async (req, res) => {
+app.get("/course", async (req: Request<{}, Course[]>, res) => {
   const result = await client.course.findMany();
 
   return res.status(200).json(result);
