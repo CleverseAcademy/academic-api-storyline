@@ -1,28 +1,13 @@
 import { Course, PrismaClient, Teacher } from "@prisma/client";
 import express, { Request } from "express";
+import { COURSE_DURATION_LIMIT } from "./const";
+import { ICreateCourseDto, IUpdateCourseDto } from "./entities/course.dto";
+import { ICreateTeacherDto } from "./entities/teacher.dto";
 
 const client = new PrismaClient();
 const app = express();
 
 app.use(express.json());
-
-interface ICreateCourseDto
-  extends Omit<{ [k in keyof Course]: string }, "id" | "duration"> {
-  duration: string | number;
-}
-
-interface IUpdateCourseDto extends Omit<ICreateCourseDto, "name"> {}
-
-const MINUTE_TO_SECONDS = 60;
-const HOUR_TO_MINUTE = 60;
-
-const toSeconds = (hours: number) => hours * MINUTE_TO_SECONDS * HOUR_TO_MINUTE;
-
-const COURSE_DURATION_LIMIT = toSeconds(8);
-interface ICreateTeacherDto {
-  name: string;
-  username: string;
-}
 
 app.post(
   "/teacher",
@@ -59,7 +44,7 @@ app.get(
 
 app.post(
   "/course",
-  async (req: Request<{}, unknown, ICreateCourseDto>, res) => {
+  async (req: Request<{}, Course | string, ICreateCourseDto>, res) => {
     const { description, duration, name, start_time } = req.body;
 
     // Validation logics
@@ -99,7 +84,7 @@ app.get("/course", async (req, res) => {
   return res.status(200).json(result);
 });
 
-app.get("/course/:id", async (req, res) => {
+app.get("/course/:id", async (req: Request<{ id: string }>, res) => {
   // UUID length
   if (req.params.id.length != 36)
     return res.status(400).send("ID is incorrect");
@@ -113,7 +98,10 @@ app.get("/course/:id", async (req, res) => {
 
 app.patch(
   "/course/:id",
-  async (req: Request<{ id: string }, unknown, IUpdateCourseDto>, res) => {
+  async (
+    req: Request<{ id: string }, Course | string, IUpdateCourseDto>,
+    res
+  ) => {
     const { description, duration, start_time } = req.body;
 
     // UUID length
@@ -149,7 +137,7 @@ app.patch(
   }
 );
 
-app.delete("/course/:id", async (req, res) => {
+app.delete("/course/:id", async (req: Request<{ id: string }>, res) => {
   // UUID length
   if (req.params.id.length != 36)
     return res.status(400).send("ID is incorrect");
