@@ -11,13 +11,6 @@ interface ICreateCourseDto
   duration: number;
 }
 
-// type Course = {
-//   name: string;
-//   description: string;
-//   start_time: string;
-//   duration: number;
-// }
-
 app.post(
   "/course",
   async (req: Request<{}, unknown, ICreateCourseDto>, res) => {
@@ -40,36 +33,3 @@ app.get("/course", async (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`);
 });
-
-// const main = async () => {
-//   await client.teacher.createMany({
-//     data: [
-//       {
-//         name: "Titanium",
-//       },
-//       {
-//         name: "Men",
-//       },
-//       {
-//         name: "A",
-//       },
-//     ],
-//   });
-// };
-
-// main().then(async () => {
-//   const teachers = await client.teacher.findMany({
-//     select: {
-//       id: true,
-//       name: true,
-//     },
-//     where: {
-//       name: {
-//         endsWith: "%n",
-//         // LIKE '%%n'
-//       },
-//     },
-//   });
-
-//   console.log(teachers);
-// });
