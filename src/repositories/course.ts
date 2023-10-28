@@ -13,4 +13,10 @@ export default class CourseRepository implements ICourseRepository {
   public getAll(): Promise<Course[]> {
     return this.prisma.course.findMany();
   }
+
+  public async getById(id: string): Promise<Course> {
+    const result = await this.prisma.course.findUnique({ where: { id } });
+    if (!result) throw new Error("Course not found");
+    return result;
+  }
 }

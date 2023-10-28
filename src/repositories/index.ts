@@ -10,4 +10,5 @@ export interface ICreateCourse {
 export interface ICourseRepository {
   create(course: ICreateCourse): Promise<Course>;
   getAll(): Promise<Course[]>;
+  getById(id: string): Promise<Course>;
 }

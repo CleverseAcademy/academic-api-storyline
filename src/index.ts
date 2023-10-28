@@ -50,6 +50,12 @@ app.get("/course", async (req: Request<{}, Course[]>, res) => {
   return res.status(200).json(result);
 });
 
+app.get("/course/:id", async (req: Request<{ id: string }, Course>, res) => {
+  const course = await courseRepository.getById(req.params.id);
+
+  return res.status(200).json(course);
+});
+
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`);
 });
