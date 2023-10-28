@@ -1,6 +1,7 @@
 {
   "conventionalCommits.scopes": [
     "handler",
-    "teacher"
+    "teacher",
+    "course"
   ]
 }

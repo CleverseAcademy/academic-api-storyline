@@ -97,6 +97,14 @@ app.get("/course", async (req, res) => {
   return res.status(200).json(result);
 });
 
+app.get("/course/:id", async (req, res) => {
+  const course = await client.course.findUnique({
+    where: { id: req.params.id },
+  });
+
+  return res.status(200).json(course);
+});
+
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`);
 });
