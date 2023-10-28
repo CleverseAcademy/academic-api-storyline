@@ -1,7 +1,7 @@
 import { Course, PrismaClient } from "@prisma/client";
 import express, { Request } from "express";
 import { COURSE_DURATION_LIMIT } from "./const";
-import { ICreateCourseDto } from "./dto/course.dto";
+import { ICreateCourseDto, IUpdateCourseDto } from "./dto/course.dto";
 import { ICourseRepository } from "./repositories";
 import CourseRepository from "./repositories/course";
 
@@ -54,6 +54,27 @@ app.get("/course/:id", async (req: Request<{ id: string }, Course>, res) => {
   const course = await courseRepository.getById(req.params.id);
 
   return res.status(200).json(course);
+});
+
+app.patch(
+  "/course/:id",
+  async (req: Request<{ id: string }, unknown, IUpdateCourseDto>, res) => {
+    const { description, duration, start_time } = req.body;
+
+    const result = await courseRepository.partialUpdate(req.params.id, {
+      description,
+      duration,
+      start_time,
+    });
+
+    return res.status(200).json(result);
+  }
+);
+
+app.delete("/course/:id", async (req, res) => {
+  const result = await courseRepository.delete(req.params.id);
+
+  return res.status(200).json(result);
 });
 
 app.listen(process.env.PORT, () => {

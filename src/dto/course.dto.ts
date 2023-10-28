@@ -4,3 +4,5 @@ export interface ICreateCourseDto {
   start_time: string;
   duration: number;
 }
+
+export interface IUpdateCourseDto extends Omit<ICreateCourseDto, "name"> {}
