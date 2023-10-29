@@ -3,23 +3,10 @@ import express, { Request } from "express";
 import { COURSE_DURATION_LIMIT } from "./const";
 import { ICreateCourseDto, IUpdateCourseDto } from "./entities/course.dto";
 import { ICreateTeacherDto } from "./entities/teacher.dto";
+import { isEmptyString, toDate, toNumber } from "./utils";
 
 const client = new PrismaClient();
 const app = express();
-
-const toNumber = (value: string) => {
-  const aNumber = Number(value);
-  if (isNaN(aNumber)) throw new Error(`${value} is not a number`);
-
-  return aNumber;
-};
-
-const toDate = (value: string) => {
-  if (isNaN(Date.parse(value))) throw new Error(`${value} is invalid datetime`);
-  return new Date(value);
-};
-
-const isEmptyString = (value: string) => value.length === 0;
 
 app.use(express.json());
 
