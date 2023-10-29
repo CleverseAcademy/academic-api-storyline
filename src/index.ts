@@ -2,9 +2,12 @@ import { Course, PrismaClient } from "@prisma/client";
 import express, { Request } from "express";
 import { COURSE_DURATION_LIMIT } from "./const";
 import { ICreateCourseDto } from "./dto/course.dto";
+import { ICourseRepository } from "./repositories";
+import CourseRepository from "./repositories/course";
 
 const client = new PrismaClient();
 const app = express();
+const courseRepository: ICourseRepository = new CourseRepository(client);
 
 app.use(express.json());
 
@@ -30,13 +33,11 @@ app.post(
     if (description.length === 0)
       return res.status(400).send(`description is empty`);
 
-    const result = await client.course.create({
-      data: {
-        name,
-        description,
-        duration,
-        start_time: new Date(start_time),
-      },
+    const result = await courseRepository.create({
+      name,
+      description,
+      start_time: new Date(start_time),
+      duration,
     });
 
     return res.status(201).json(result);
@@ -44,7 +45,7 @@ app.post(
 );
 
 app.get("/course", async (req: Request<{}, Course[]>, res) => {
-  const result = await client.course.findMany();
+  const result = await courseRepository.getAll();
 
   return res.status(200).json(result);
 });
