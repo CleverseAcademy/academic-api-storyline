@@ -1,7 +1,11 @@
 import { Course, PrismaClient, Teacher } from "@prisma/client";
 import express, { Request } from "express";
 import { COURSE_DURATION_LIMIT } from "./const";
-import { ICreateCourseDto, IUpdateCourseDto } from "./dto/course.dto";
+import {
+  ICourseDto,
+  ICreateCourseDto,
+  IUpdateCourseDto,
+} from "./dto/course.dto";
 import { ICreateTeacherDto } from "./dto/teacher.dto";
 import { ICourseRepository, ITeacherRepository } from "./repositories";
 import CourseRepository from "./repositories/course";
@@ -84,7 +88,7 @@ app.post(
   }
 );
 
-app.get("/course", async (req: Request<{}, Course[]>, res) => {
+app.get("/course", async (req: Request<{}, ICourseDto[]>, res) => {
   const result = await courseRepository.getAll();
 
   return res.status(200).json(result);
@@ -92,7 +96,7 @@ app.get("/course", async (req: Request<{}, Course[]>, res) => {
 
 app.get(
   "/course/:id",
-  async (req: Request<{ id: string }, Course | string>, res) => {
+  async (req: Request<{ id: string }, ICourseDto | string>, res) => {
     // UUID length
     if (req.params.id.length != 36)
       return res.status(400).send("ID is incorrect");

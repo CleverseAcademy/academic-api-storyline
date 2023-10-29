@@ -1,5 +1,5 @@
 import { Course, Teacher } from "@prisma/client";
-import { IUpdateCourseDto } from "../dto/course.dto";
+import { ICourseDto, IUpdateCourseDto } from "../dto/course.dto";
 import { ICreateTeacherDto } from "../dto/teacher.dto";
 
 export interface ICreateCourse {
@@ -11,8 +11,8 @@ export interface ICreateCourse {
 
 export interface ICourseRepository {
   create(instructorId: string, course: ICreateCourse): Promise<Course>;
-  getAll(): Promise<Course[]>;
-  getById(id: string): Promise<Course>;
+  getAll(): Promise<ICourseDto[]>;
+  getById(id: string): Promise<ICourseDto>;
   partialUpdate(id: string, data: IUpdateCourseDto): Promise<Course>;
   delete(id: string): Promise<Course>;
 }

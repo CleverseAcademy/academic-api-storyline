@@ -1,6 +1,6 @@
 import { Course, PrismaClient } from "@prisma/client";
 import { ICourseRepository, ICreateCourse } from ".";
-import { IUpdateCourseDto } from "../dto/course.dto";
+import { ICourseDto, IUpdateCourseDto } from "../dto/course.dto";
 
 export default class CourseRepository implements ICourseRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -11,12 +11,31 @@ export default class CourseRepository implements ICourseRepository {
     });
   }
 
-  public getAll(): Promise<Course[]> {
-    return this.prisma.course.findMany();
+  public getAll(): Promise<ICourseDto[]> {
+    return this.prisma.course.findMany({
+      include: {
+        instructor: {
+          select: {
+            name: true,
+            registeredAt: true,
+          },
+        },
+      },
+    });
   }
 
-  public async getById(id: string): Promise<Course> {
-    const result = await this.prisma.course.findUnique({ where: { id } });
+  public async getById(id: string): Promise<ICourseDto> {
+    const result = await this.prisma.course.findUnique({
+      include: {
+        instructor: {
+          select: {
+            name: true,
+            registeredAt: true,
+          },
+        },
+      },
+      where: { id },
+    });
     if (!result) throw new Error("Course not found");
     return result;
   }
