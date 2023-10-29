@@ -1,4 +1,4 @@
-import { Course, PrismaClient } from "@prisma/client";
+import { Course, PrismaClient, Teacher } from "@prisma/client";
 import express, { Request } from "express";
 
 const client = new PrismaClient();
@@ -17,6 +17,43 @@ const HOUR_TO_MINUTE = 60;
 const toSeconds = (hours: number) => hours * MINUTE_TO_SECONDS * HOUR_TO_MINUTE;
 
 const COURSE_DURATION_LIMIT = toSeconds(8);
+interface ICreateTeacherDto {
+  name: string;
+  username: string;
+}
+
+app.post(
+  "/teacher",
+  async (req: Request<{}, Teacher | string, ICreateTeacherDto>, res) => {
+    const { name, username } = req.body;
+
+    if (name.length === 0) return res.status(400).send(`name is empty`);
+    if (username.length === 0) return res.status(400).send(`username is empty`);
+
+    const result = await client.teacher.create({
+      data: { name, username },
+    });
+
+    return res.status(201).json(result);
+  }
+);
+
+app.get(
+  "/teacher",
+  async (req: Request<{}, Teacher[] | string, null, { name: string }>, res) => {
+    const { name } = req.query;
+
+    const result = await client.teacher.findMany({
+      where: {
+        name: {
+          startsWith: name,
+        },
+      },
+    });
+
+    return res.status(200).json(result);
+  }
+);
 
 app.post(
   "/course",

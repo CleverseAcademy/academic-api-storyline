@@ -11,8 +11,10 @@ datasource db {
 }
 
 model Teacher {
-  id   String @id @default(uuid()) @db.Uuid
-  name String @db.VarChar(255)
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(255)
+  registeredAt DateTime @default(now())
+  username     String   @unique
 }
 
 model Course {
