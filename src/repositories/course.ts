@@ -5,9 +5,9 @@ import { IUpdateCourseDto } from "../dto/course.dto";
 export default class CourseRepository implements ICourseRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  public create(course: ICreateCourse): Promise<Course> {
+  public create(instructorId: string, course: ICreateCourse): Promise<Course> {
     return this.prisma.course.create({
-      data: course,
+      data: { ...course, instructorId },
     });
   }
 

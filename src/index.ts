@@ -47,10 +47,16 @@ app.get(
 
 app.post(
   "/course",
-  async (req: Request<{}, Course | string, ICreateCourseDto>, res) => {
+  async (
+    req: Request<{}, Course | string, ICreateCourseDto, { teacherId: string }>,
+    res
+  ) => {
     const { description, duration, name, start_time } = req.body;
 
     // Validation logics
+    if (req.query.teacherId.length != 36)
+      return res.status(400).send("teacherId is incorrect");
+
     if (typeof duration !== "number")
       return res.status(400).send(`Duration is not a number`);
 
@@ -67,7 +73,7 @@ app.post(
     if (description.length === 0)
       return res.status(400).send(`description is empty`);
 
-    const result = await courseRepository.create({
+    const result = await courseRepository.create(req.query.teacherId, {
       name,
       description,
       start_time: new Date(start_time),
