@@ -1,15 +1,49 @@
-import { Course, PrismaClient } from "@prisma/client";
+import { Course, PrismaClient, Teacher } from "@prisma/client";
 import express, { Request } from "express";
 import { COURSE_DURATION_LIMIT } from "./const";
 import { ICreateCourseDto, IUpdateCourseDto } from "./dto/course.dto";
-import { ICourseRepository } from "./repositories";
+import { ICreateTeacherDto } from "./dto/teacher.dto";
+import { ICourseRepository, ITeacherRepository } from "./repositories";
 import CourseRepository from "./repositories/course";
+import TeacherRepository from "./repositories/teacher";
 
 const client = new PrismaClient();
 const app = express();
 const courseRepository: ICourseRepository = new CourseRepository(client);
+const teacherRepository: ITeacherRepository = new TeacherRepository(client);
 
 app.use(express.json());
+
+app.post(
+  "/teacher",
+  async (req: Request<{}, Teacher | string, ICreateTeacherDto>, res) => {
+    const { name, username } = req.body;
+
+    if (name.length === 0) return res.status(400).send(`name is empty`);
+    if (username.length === 0) return res.status(400).send(`username is empty`);
+
+    const result = await teacherRepository.create({ name, username });
+
+    return res.status(201).json(result);
+  }
+);
+
+app.get("/teacher", async (req: Request<{}, Teacher[] | string>, res) => {
+  const result = await teacherRepository.getAll();
+
+  return res.status(200).json(result);
+});
+
+app.get(
+  "/teacher/search",
+  async (req: Request<{}, Teacher[] | string, null, { name: string }>, res) => {
+    const { name } = req.query;
+
+    const result = await teacherRepository.findNameBeginsWith(name);
+
+    return res.status(200).json(result);
+  }
+);
 
 app.post(
   "/course",
