@@ -15,11 +15,15 @@ const courseHandler: ICourseHandler = new CourseHandler(courseRepo);
 
 app.use(express.json());
 
-app.patch("/course/:id", courseHandler.updateById);
+const courseRouter = express.Router();
 
-app.delete("/course/:id", courseHandler.deleteById);
+app.use("/course", courseRouter);
 
-app.get("/courses", courseHandler.getAll);
+courseRouter.patch("/:id", courseHandler.updateById);
+
+courseRouter.delete("/:id", courseHandler.deleteById);
+
+courseRouter.get("/", courseHandler.getAll);
 
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`);
