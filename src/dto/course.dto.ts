@@ -1,4 +1,4 @@
-import { Course, Teacher } from "@prisma/client";
+import { Course } from "@prisma/client";
 
 export interface ICreateCourseDto {
   name: string;
@@ -14,5 +14,7 @@ export interface IUpdateCourseDto {
 }
 
 export interface ICourseDto extends Course {
-  instructor: Teacher;
+  instructor: {
+    name: string;
+  };
 }
