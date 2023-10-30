@@ -1,4 +1,4 @@
-import { fromHoursToSeconds } from "./utils";
+import { fromHoursToSeconds } from "./utils/fromHoursToSeconds";
 
 export const HOUR_TO_MINUTES = 60;
 export const MINUTE_TO_SECONDS = 60;
