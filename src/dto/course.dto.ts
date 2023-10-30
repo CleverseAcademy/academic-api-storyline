@@ -5,3 +5,8 @@ export interface ICreateCourseDto {
   duration: number;
 }
 
+export interface IUpdateCourseDto {
+  description: string;
+  start_time: string;
+  duration: number;
+}

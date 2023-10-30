@@ -1,7 +1,7 @@
 import { Course, PrismaClient } from "@prisma/client";
 import express, { Request } from "express";
 import { DURATION_LIMIT_IN_SECONDS } from "./const";
-import { ICreateCourseDto } from "./dto/course.dto";
+import { ICreateCourseDto, IUpdateCourseDto } from "./dto/course.dto";
 import CourseRepository from "./repositories/course";
 import { ICourseRepository } from "./repositories/course.type";
 
@@ -52,9 +52,23 @@ app.post(
   }
 );
 
+app.patch(
+  "/course/:id",
+  async (req: Request<{ id: string }, Course, IUpdateCourseDto>, res) => {
+    const { description, duration, start_time } = req.body;
+
+    const result = await courseRepo.partialUpdate(req.params.id, {
+      description,
+      duration,
+      start_time: new Date(start_time),
+    });
+
+    return res.status(200).json(result);
+  }
+);
+
 app.get("/courses", async (req: Request<{}, Course[]>, res) => {
   const result = await courseRepo.getAll();
-
 
   return res.status(200).json(result);
 });

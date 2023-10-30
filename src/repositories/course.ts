@@ -13,4 +13,11 @@ export default class CourseRepository implements ICourseRepository {
   public getAll(): Promise<Course[]> {
     return this.prisma.course.findMany();
   }
+
+  public partialUpdate(id: string, data: IUpdateCourse): Promise<Course> {
+    return this.prisma.course.update({
+      where: { id: id },
+      data: data,
+    });
+  }
 }

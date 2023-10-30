@@ -6,7 +6,15 @@ export interface ICreateCourse {
   start_time: Date;
   duration: number;
 }
+
+export interface IUpdateCourse {
+  description: string;
+  start_time: Date;
+  duration: number;
+}
+
 export interface ICourseRepository {
   create(course: ICreateCourse): Promise<Course>;
   getAll(): Promise<Course[]>;
+  partialUpdate(id: string, data: IUpdateCourse): Promise<Course>;
 }
