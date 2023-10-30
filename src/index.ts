@@ -1,9 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
-import { ICourseHandler } from "./handlers";
+import { ICourseHandler, ITeacherHandler } from "./handlers";
 import CourseHandler from "./handlers/course";
-import { ICourseRepository } from "./repositories";
+import TeacherHandler from "./handlers/teacher";
+import { ICourseRepository, ITeacherRepository } from "./repositories";
 import CourseRepository from "./repositories/course";
+import TeacherRepository from "./repositories/teacher";
 
 const app = express();
 
@@ -12,6 +14,10 @@ const client = new PrismaClient();
 const courseRepo: ICourseRepository = new CourseRepository(client);
 
 const courseHandler: ICourseHandler = new CourseHandler(courseRepo);
+
+const teacherRepo: ITeacherRepository = new TeacherRepository(client);
+
+const teacherHandler: ITeacherHandler = new TeacherHandler(teacherRepo);
 
 app.use(express.json());
 
@@ -24,6 +30,12 @@ courseRouter.patch("/:id", courseHandler.updateById);
 courseRouter.delete("/:id", courseHandler.deleteById);
 
 courseRouter.get("/", courseHandler.getAll);
+
+const teacherRouter = express.Router();
+
+app.use("/teacher", teacherRouter);
+
+teacherRouter.post("/", teacherHandler.register);
 
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`);
