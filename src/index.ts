@@ -1,14 +1,29 @@
-import { Course, PrismaClient } from "@prisma/client";
-import express, { Request } from "express";
-import { ICourseDto, IUpdateCourseDto } from "./dto/course.dto";
+import { PrismaClient } from "@prisma/client";
+import express from "express";
+import { ICourseHandler } from "./handlers";
+import CourseHandler from "./handlers/course";
 import { ICourseRepository } from "./repositories";
 import CourseRepository from "./repositories/course";
 
-const client = new PrismaClient();
 const app = express();
+
+const client = new PrismaClient();
+
 const courseRepo: ICourseRepository = new CourseRepository(client);
 
+const courseHandler: ICourseHandler = new CourseHandler(courseRepo);
+
 app.use(express.json());
+
+app.patch("/course/:id", courseHandler.updateById);
+
+app.delete("/course/:id", courseHandler.deleteById);
+
+app.get("/courses", courseHandler.getAll);
+
+app.listen(process.env.PORT, () => {
+  console.log(`Listening on port ${process.env.PORT}`);
+});
 
 // app.post(
 //   "/course",
@@ -50,34 +65,3 @@ app.use(express.json());
 //     return res.status(201).json(result);
 //   }
 // );
-
-app.patch(
-  "/course/:id",
-  async (req: Request<{ id: string }, Course, IUpdateCourseDto>, res) => {
-    const { description, duration, start_time } = req.body;
-
-    const result = await courseRepo.partialUpdate(req.params.id, {
-      description,
-      duration,
-      start_time: new Date(start_time),
-    });
-
-    return res.status(200).json(result);
-  }
-);
-
-app.delete("/course/:id", async (req: Request<{ id: string }, Course>, res) => {
-  const result = await courseRepo.delete(req.params.id);
-
-  return res.status(200).json(result);
-});
-
-app.get("/courses", async (req: Request<{}, ICourseDto[]>, res) => {
-  const result = await courseRepo.getAll();
-
-  return res.status(200).json(result);
-});
-
-app.listen(process.env.PORT, () => {
-  console.log(`Listening on port ${process.env.PORT}`);
-});
