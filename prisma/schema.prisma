@@ -11,14 +11,17 @@ datasource db {
 }
 
 model Teacher {
-  id   String @id @default(uuid()) @db.Uuid
-  name String @db.VarChar(255)
+  id     String   @id @default(uuid()) @db.Uuid
+  name   String   @db.VarChar(255)
+  Course Course[]
 }
 
 model Course {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String
-  description String
-  start_time  DateTime @db.Time()
-  duration    Int
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  description  String
+  start_time   DateTime @db.Time()
+  duration     Int
+  instructor   Teacher  @relation(fields: [instructorId], references: [id])
+  instructorId String   @db.Uuid
 }

@@ -1,17 +1,22 @@
 import { Course, PrismaClient } from "@prisma/client";
-import { ICourseRepository, ICreateCourse, IUpdateCourse } from "./course.type";
+import { ICourseDto } from "../dto/course.dto";
+import { ICourseRepository, IUpdateCourse } from "./course.type";
 
 export default class CourseRepository implements ICourseRepository {
   constructor(private prisma: PrismaClient) {}
 
-  public create(course: ICreateCourse): Promise<Course> {
-    return this.prisma.course.create({
-      data: course,
-    });
-  }
+  // public create(course: ICreateCourse): Promise<Course> {
+  //   return this.prisma.course.create({
+  //     data: course,
+  //   });
+  // }
 
-  public getAll(): Promise<Course[]> {
-    return this.prisma.course.findMany();
+  public getAll(): Promise<ICourseDto[]> {
+    return this.prisma.course.findMany({
+      include: {
+        instructor: true,
+      },
+    });
   }
 
   public partialUpdate(id: string, data: IUpdateCourse): Promise<Course> {
