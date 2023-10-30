@@ -1,6 +1,6 @@
 import { Course, PrismaClient } from "@prisma/client";
+import { ICourseRepository, IUpdateCourse } from ".";
 import { ICourseDto } from "../dto/course.dto";
-import { ICourseRepository, IUpdateCourse } from "./course.type";
 
 export default class CourseRepository implements ICourseRepository {
   constructor(private prisma: PrismaClient) {}

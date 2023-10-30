@@ -1,8 +1,8 @@
 import { Course, PrismaClient } from "@prisma/client";
 import express, { Request } from "express";
 import { ICourseDto, IUpdateCourseDto } from "./dto/course.dto";
+import { ICourseRepository } from "./repositories";
 import CourseRepository from "./repositories/course";
-import { ICourseRepository } from "./repositories/course.type";
 
 const client = new PrismaClient();
 const app = express();
