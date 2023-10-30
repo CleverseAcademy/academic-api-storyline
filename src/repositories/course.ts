@@ -20,4 +20,10 @@ export default class CourseRepository implements ICourseRepository {
       data: data,
     });
   }
+
+  public delete(id: string): Promise<Course> {
+    return this.prisma.course.delete({
+      where: { id: id },
+    });
+  }
 }

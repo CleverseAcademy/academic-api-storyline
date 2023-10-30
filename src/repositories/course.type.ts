@@ -17,4 +17,5 @@ export interface ICourseRepository {
   create(course: ICreateCourse): Promise<Course>;
   getAll(): Promise<Course[]>;
   partialUpdate(id: string, data: IUpdateCourse): Promise<Course>;
+  delete(id: string): Promise<Course>;
 }

@@ -67,6 +67,12 @@ app.patch(
   }
 );
 
+app.delete("/course/:id", async (req: Request<{ id: string }, Course>, res) => {
+  const result = await courseRepo.delete(req.params.id);
+
+  return res.status(200).json(result);
+});
+
 app.get("/courses", async (req: Request<{}, Course[]>, res) => {
   const result = await courseRepo.getAll();
 
