@@ -3,6 +3,7 @@ import express from "express";
 import { ICourseHandler, ITeacherHandler } from "./handlers";
 import CourseHandler from "./handlers/course";
 import TeacherHandler from "./handlers/teacher";
+import JWTMiddleware from "./middlewares/jwt";
 import { ICourseRepository, ITeacherRepository } from "./repositories";
 import CourseRepository from "./repositories/course";
 import TeacherRepository from "./repositories/teacher";
@@ -10,6 +11,8 @@ import TeacherRepository from "./repositories/teacher";
 const app = express();
 
 const client = new PrismaClient();
+
+const authorizationMiddleware = new JWTMiddleware();
 
 const courseRepo: ICourseRepository = new CourseRepository(client);
 const courseHandler: ICourseHandler = new CourseHandler(courseRepo);
@@ -23,7 +26,11 @@ const courseRouter = express.Router();
 
 app.use("/course", courseRouter);
 
-courseRouter.patch("/:id", courseHandler.updateById);
+courseRouter.patch(
+  "/:id",
+  authorizationMiddleware.auth,
+  courseHandler.updateById
+);
 
 courseRouter.delete("/:id", courseHandler.deleteById);
 

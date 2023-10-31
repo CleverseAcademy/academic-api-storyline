@@ -19,6 +19,8 @@ export default class CourseHandler implements ICourseHandler {
   public updateById: ICourseHandler["updateById"] = async (req, res) => {
     const { description, duration, start_time } = req.body;
 
+    console.log(res.locals);
+
     const result = await this.repo.partialUpdate(req.params.id, {
       description,
       duration,
