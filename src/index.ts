@@ -12,11 +12,9 @@ const app = express();
 const client = new PrismaClient();
 
 const courseRepo: ICourseRepository = new CourseRepository(client);
-
 const courseHandler: ICourseHandler = new CourseHandler(courseRepo);
 
 const teacherRepo: ITeacherRepository = new TeacherRepository(client);
-
 const teacherHandler: ITeacherHandler = new TeacherHandler(teacherRepo);
 
 app.use(express.json());
@@ -36,6 +34,7 @@ const teacherRouter = express.Router();
 app.use("/teacher", teacherRouter);
 
 teacherRouter.post("/", teacherHandler.register);
+teacherRouter.post("/login", teacherHandler.login);
 
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`);

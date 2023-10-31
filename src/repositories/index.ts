@@ -24,4 +24,5 @@ export interface ICourseRepository {
 
 export interface ITeacherRepository {
   create(teacher: ICreateTeacherDto): Promise<Teacher>;
+  findByUsername(username: string): Promise<Teacher>;
 }

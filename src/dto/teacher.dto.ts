@@ -10,3 +10,16 @@ export interface ICreateTeacherDto {
   username: string;
   password: string;
 }
+
+export interface ITeacherLoginDto {
+  username: string;
+  password: string;
+}
+
+export type ILoginResultDto =
+  | { err: string }
+  | {
+      id: string;
+      username: string;
+      token: string;
+    };

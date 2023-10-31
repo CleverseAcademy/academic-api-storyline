@@ -12,4 +12,12 @@ export default class TeacherRepository implements ITeacherRepository {
       throw new Error(`Failed to create teacher ${teacher.username}: ${error}`);
     }
   }
+  async findByUsername(username: string): Promise<Teacher> {
+    const result = await this.prisma.teacher.findUnique({
+      where: { username },
+    });
+    if (!result) throw new Error(`Given username: '${username}' is not found`);
+
+    return result;
+  }
 }
